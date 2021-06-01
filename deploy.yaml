@@ -1,0 +1,70 @@
+##################################################################################################
+# caller service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: caller
+  labels:
+    app: caller
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: caller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caller-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: caller
+        version: v1
+    spec:
+      containers:
+      - name: caller
+        image: caller
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+---
+##################################################################################################
+# callee service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: callee
+  labels:
+    app: callee
+spec:
+  ports:
+  - port: 8081
+    name: http
+  selector:
+    app: callee
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: callee-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: callee
+        version: v1
+    spec:
+      containers:
+      - name: callee
+        image: callee
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+---
